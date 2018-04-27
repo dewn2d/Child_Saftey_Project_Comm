@@ -1,0 +1,47 @@
+1) install software
+	sudo apt-get update
+	sudo apt-get install ppp screen elinks
+
+2) In order to enable it GPIO serial port, edit config.txt:
+
+	$ sudo nano /boot/config.txt
+
+   add the line (at the bottom):
+
+	enable_uart=1
+
+   As of May 2016 this will also lock the cpu core frequency for you 
+   so there’s nothing else you need to do (If you aren’t convinced 
+   and you really like to belt and braces it the command is:  
+   core_freq=250 which you add to the same file aswell).
+
+   Reboot for the changes to take effect.
+
+   This should get you good serial communications for most uses.
+
+--------------------- 3 may not be needed --------------------
+3 ) If you are using the serial port for anything other than the 
+   console you need to disable it. 
+   The “disable” will stop it loading in the future.
+
+   For Raspberry Pi 3’s the command is similar but referencing /dev/
+   ttyS0:
+
+	$ sudo systemctl stop serial-getty@ttyS0.service
+	$ sudo systemctl disable serial-getty@ttyS0.service
+   You also need to remove the console from the cmdline.txt. If you 
+   edit this with:
+
+	$ sudo nano /boot/cmdline.txt
+
+   you will see something like:
+
+   dwc_otg.lpm_enable=0 console=serial0,115200 console=tty1 root=/
+   dev/mmcblk0p2 rootfstype=ext4 elevator=deadline fsck.repair=yes 
+   root wait
+   
+   remove the line: 
+
+	console=serial0,115200
+ 
+   and save and reboot for changes to take effect.
